@@ -186,3 +186,33 @@ footer nav ul {
 	margin: 2em
 }
 
+/* Boutons Gallerie */
+
+.btn-container{
+	display: flex;
+	justify-content: center;
+	gap:10px;
+	margin-bottom: 3em;
+}
+
+.btn{
+	font-family: 'Syne';
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 50px;
+	height: 37px;	
+	border: 1px solid #1D6154;
+	color: #1D6154;	
+	padding: 0 1%;
+	border-radius: 60px;
+	font-weight: 700;
+	cursor: pointer;
+	
+}
+
+.active{
+	background: #1D6154;
+	color: white;
+}
