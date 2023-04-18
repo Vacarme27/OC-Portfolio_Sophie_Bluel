@@ -22,7 +22,7 @@ function createGallery(works){
     imageElement.alt = gallery.title;  
     
     const nomElement = document.createElement("figcaption");
-    nomElement.innerText = gallery.title;  
+    nomElement.innerText = gallery.title;
     
     divGallery.appendChild(figureElement);
     figureElement.appendChild(imageElement);
@@ -66,34 +66,23 @@ filtreBtn.forEach(function(tableau) {
   });
 });
 
-// btnTous.addEventListener("click", function(){
-//   const worksFiltreTous = works.filtre(function (works){
-//     return works.categorieId;
-//   });
-//     document.querySelector(".gallery").innerHTML = "";
-//     createGallery(worksFiltreTous);    
-// });
+//____________________EDITOR_MODE_______________//
+const jsLogin = document.querySelector(".jsLogin");
 
-// btnObjets.addEventListener("click", function(){
-//   const worksFiltreobjet = works.filtre(function (works){
-//     return works.categorieId === 1;
-//   });
-//     document.querySelector(".gallery").innerHTML = "";
-//     createGallery(worksFiltreobjet);  
-// });
-
-// btnAppartements.addEventListener("click", function(){
-//   const worksFiltreAppartements = works.filtre(function (works){
-//     return works.categorieId === 2;
-//   });
-//     document.querySelector(".gallery").innerHTML = "";
-//     createGallery(worksFiltreAppartements);  
-// });
-
-// btnrHotels.addEventListener("click", function(){
-//   const worksFiltreHotels = works.filtre(function (works){
-//     return works.categorieId === 3;
-//   });
-//     document.querySelector(".gallery").innerHTML = "";
-//     createGallery(worksFiltreHotels);  
-// });
+function editorMode(){  
+  const admin = document.querySelector(".admin");  
+  const token = localStorage.getItem("valideToken");  
+  if (token) {
+    admin.style.visibility = "visible";
+    jsLogin.textContent = "logout";
+    jsLogin.classList.add("color-black")   
+    jsLogin.addEventListener("click", function (event) {
+      event.preventDefault();
+      localStorage.removeItem("valideToken");
+      window.location.reload();
+    });
+  } else {
+    admin.style.display = "none";    
+  }
+};
+editorMode();

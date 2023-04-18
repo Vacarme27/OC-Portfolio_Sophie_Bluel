@@ -24,8 +24,8 @@ form.addEventListener('submit', function(event) {
     return reponse.json();
   })
   .then(function(user) {
-    if (user.token) {
-      localStorage.setItem('token', user.token);
+    if (user.token) {      
+      localStorage.setItem('valideToken', user.token);
       window.location.href = "index.html";
     } else {
       error.textContent = 'Nom d\'utilisateur ou mot de passe incorrect.';
