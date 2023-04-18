@@ -70,10 +70,14 @@ filtreBtn.forEach(function(tableau) {
 const jsLogin = document.querySelector(".jsLogin");
 
 function editorMode(){  
-  const admin = document.querySelector(".admin");  
+  const admin = document.querySelector(".admin");
+  const editorMode = document.querySelectorAll(".editor-mode"); 
   const token = localStorage.getItem("valideToken");  
-  if (token) {
+  if (token) {    
     admin.style.visibility = "visible";
+    for(let i = 0; i < editorMode.length; i++) {
+      editorMode[i].style.visibility = "visible";
+    }  
     jsLogin.textContent = "logout";
     jsLogin.classList.add("color-black")   
     jsLogin.addEventListener("click", function (event) {
@@ -82,7 +86,13 @@ function editorMode(){
       window.location.reload();
     });
   } else {
-    admin.style.display = "none";    
+    admin.style.display = "none";
+    for(let i = 0; i < editorMode.length; i++) {
+      editorMode[i].style.display = "none";
+    }
   }
 };
 editorMode();
+
+// ______________Modale_______________//
+

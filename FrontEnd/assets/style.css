@@ -139,7 +139,7 @@ li:hover, li a:hover {
 #introduction figure {
 	flex: 1
 }
-#introduction img {
+#introduction img, #introduction a {
 	display: block;
 	margin: auto;
 	width: 80%;
@@ -156,8 +156,12 @@ li:hover, li a:hover {
 	margin-bottom: 0.5em;
 }
 #portfolio h2 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
 	text-align: center;
-	margin-bottom: 1em;
+	margin-bottom: 1em;	
 }
 .gallery {
 	width: 100%;
@@ -260,6 +264,7 @@ footer nav ul {
     height : 59px;    
 	visibility: hidden;
 	gap:20px;
+	margin: auto;
 }
 
 .admin p i{
@@ -277,6 +282,20 @@ footer nav ul {
 	border-radius: 60px;
 	padding: 8px 15px;
 	cursor: pointer;
+}
+
+.editor-mode{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 14px;
+	font-weight: 400;
+	cursor: pointer;
+	font-style: 'Work Sans';
+	visibility: hidden;
+}
+.editor-mode i {
+	padding-right: 11px;	
 }
 
 /*__________Modal____________*/
