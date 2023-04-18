@@ -22,8 +22,7 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-	text-decoration: none;
-	color: black;
+	text-decoration: none;	
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -143,6 +142,11 @@ li:hover, li a:hover {
 	display: block;
 	margin: auto;
 	width: 80%;
+}
+
+#introduction a:nth-child(1){
+	margin: 0;
+	margin-bottom: 20px;
 }
 
 #introduction article {
@@ -267,9 +271,6 @@ footer nav ul {
 	margin: auto;
 }
 
-.admin p i{
-	padding-right: 10px;	
-}
 .admin p, .admin p i {
 	color: white;	
 }
@@ -293,6 +294,7 @@ footer nav ul {
 	cursor: pointer;
 	font-style: 'Work Sans';
 	visibility: hidden;
+	color: black;
 }
 .editor-mode i {
 	padding-right: 11px;	
@@ -300,6 +302,104 @@ footer nav ul {
 
 /*__________Modal____________*/
 
+.modal{
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-wrapper{
+	display: flex;
+	flex-direction: column;
+	align-items: center;	
+	overflow: auto;
+	background-color: #fff;
+	width: 630px;
+	height: 731px;
+	max-width: calc(100vw - 20px);
+	max-height: calc(100vh - 20px);	
+	padding: 45px;
+	border-radius: 15px;
+	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+.title-gallery{
+	font-weight: 400;
+	font-size: 28px;
+	text-align: center;
+}
+
+#modal-gallery {
+	margin: 40px 50px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+}
+
+#modal-gallery img{
+	height: 105px;
+	width: 80px;
+}
+
+.grey-line{
+	height:1px;
+	background-color: #b3b3b3;
+	width: 420px;	
+}
+.modal-button{	
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 1.2em;
+	color: white;
+	background-color: #1D6154;
+	width: 237px;
+	height: 36px;
+	text-align: center;
+	border-radius: 60px ;
+	cursor: pointer;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.del-gallery{
+	color: red;
+	cursor: pointer;
+	text-align: center;
+}
+
+.close-modal{		
+	width: 15px;
+	margin-left: auto;
+	font-weight: 600;
+	font-size: 25px;
+	cursor: pointer;
+}
+
+.img-container{
+	position: relative;
+	display: inline-block;
+	margin: 5px;
+}
+
+.trash-icon-container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: black;
+	color: #fff;
+	position: absolute;
+	top: 5px;
+	right: 5px;	
+	cursor: pointer;
+	height: 20px;
+	width: 20px;
+	text-align: center;
+}
 
 /*__________Page Login_________*/
 .color-black{
