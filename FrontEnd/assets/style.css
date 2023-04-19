@@ -83,6 +83,7 @@ footer {
 	background-color: white;
 	width: 100%;
 	height: 100%;
+	margin-top: 2.16em;
 }
 
 .footer-nav {
@@ -128,6 +129,10 @@ nav li {
 	font-size: 1.2em;
 }
 
+li a{
+	color: black
+}
+
 li:hover, li a:hover {
 	color: #B1663C;
 }
@@ -159,7 +164,7 @@ li:hover, li a:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
-#portfolio h2 {
+.h2-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -177,19 +182,21 @@ li:hover, li a:hover {
 
 .gallery img {
 	width: 100%;
-
 }
+
 #contact {
 	width: 50%;
 margin: auto;
+
 }
 #contact > * {
 	text-align: center;
-
 }
+
 #contact h2{
 	margin-bottom: 20px;
 }
+
 #contact form {
 	text-align: left;
 	margin-top:30px;
@@ -203,9 +210,11 @@ margin: auto;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
+
 #contact label {
 	margin: 2em 0 1em 0;
 }
+
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);

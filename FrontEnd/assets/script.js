@@ -31,7 +31,7 @@ function createGallery(works){
 };
 createGallery(works);
 
-// Filtre
+//______________Filtres__________________
 
 const filtreBtn = [
   { bouton: btnTous, categorie: null },
@@ -126,30 +126,35 @@ const stopPropagation = function (event){
 document.querySelectorAll('.js-modal').forEach(a => {
   a.addEventListener('click', openModal)
 })
+
 //____________Affichage Gallerie Modale______________
 
 const modalGalleryShow = document.querySelector('#modal-gallery');
+const modalElements = document.querySelectorAll('.js-modal');
 
-
-document.querySelectorAll('.js-modal').forEach(a => {
-  a.addEventListener('click', (event) =>{
+modalElements.forEach(function(a) {
+  a.addEventListener('click', function(event) {
     event.preventDefault();
     modalGalleryShow.innerHTML = "";
+
     fetch("http://localhost:5678/api/works/")
-    .then((response) => response.json())
-    .then((data) => {
-      data.forEach((image) => {
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      data.forEach(function(image) {
         const imgContainer = document.createElement("div");
-        imgContainer.classList.add("img-container");        
+        imgContainer.classList.add("img-container");
         imgContainer.setAttribute("data-id", image.id);
         imgContainer.innerHTML = `
           <img src="${image.imageUrl}" alt="${image.title}">
           <div class="trash-icon-container">
             <i class="fa-solid fa-trash-can trash-icon"></i>
           </div>
-          <p>éditer</p>`;
-          modalGalleryShow.appendChild(imgContainer);
-      })
-    })
-  })
+          <p>éditer</p>`;        
+
+        modalGalleryShow.appendChild(imgContainer);
+      });
+    });
+  });
 });
