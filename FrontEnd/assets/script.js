@@ -76,7 +76,7 @@ function editorMode(){
   const token = localStorage.getItem("valideToken");  
   if (token) {    
     for(let i = 0; i < editorMode.length; i++) {
-      editorMode[i].style.display = "block";
+      editorMode[i].style.display = "flex";
     }
     filters.style.display = "none";
     jsLogin.textContent = "logout";

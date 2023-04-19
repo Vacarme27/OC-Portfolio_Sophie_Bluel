@@ -31,17 +31,15 @@
 			<p class="js-close-modal close-modal">x</p>
 		</div>
 		<h3 class="title-gallery">Ajout Photo</h3>
-		<div class="add-gallery">
-			<div class="bg-icon">
-				<i class="fa-regular fa-image"></i>
-			</div>
-			<button>+ Ajouter photo</button>
+		<div class="add-gallery">			
+			<i class="fa-regular fa-image"></i>			
+			<button class="modal-gallery-button">+ Ajouter photo</button>
 			<p>jpg, png : 4mo max</p>
 		</div>
 		<form id="upload-photo" action="http://localhost:5678/api/works">
 			<label for="title">Titre</label>
 			<input type="text" name="title" id="title">
-			<label for="category" name="category"></label>
+			<label for="category" name="category">Catégorie</label>
 			<select name="category" id="category">
 				<option value="null"></option>
 				<option value="1">Objets</option>
@@ -49,8 +47,10 @@
 				<option value="3">Hotels & restaurants</option>				
 			</select>
 		</form>
-		<div class="grey-line"></div>
-		<button>Valider</button>		
+		<div class="modal-gallery-container-button">
+			<div class="grey-line"></div>
+			<button class="modal-gallery-button-validate">Valider</button>		
+		</div>
 	</div>
 </aside>
 <header>
