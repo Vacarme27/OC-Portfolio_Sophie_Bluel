@@ -16,16 +16,41 @@
 	<p><i class="fa-regular fa-pen-to-square fa-lg"></i>Mode édition</p>
 	<button>publier les changements</button>
 </div>
-<aside id ="modal1" class="modal" aria-hidden="true" aria-modal="false" style="display:none;">
+<aside id ="modal1" class="modal" aria-hidden="true" style="display:none;">
 	<div class="modal-wrapper js-stop-modal">
-		<p class="js-close-modal close-modal">x</p>
+		<p class="js-close-modal-gallery close-modal">x</p>
 		<h3 class="title-gallery">Gallerie photos</h3>
 		<div id="modal-gallery"></div>
 		<div class="grey-line"></div>
-		<button class="modal-button">Ajouter photo
-			<input type="file" style="display:none">
-		</button>
+		<button class="modal-button">Ajouter photo</button>
 		<p class="del-gallery">Supprimer la galerie</p>
+	</div>
+	<div class="modal-add-gallery js-stop-modal-gallery" style="display:none;">
+		<div class="nav-modal-container">
+			<i class="arrow-left fa-solid fa-arrow-left"></i>
+			<p class="js-close-modal close-modal">x</p>
+		</div>
+		<h3 class="title-gallery">Ajout Photo</h3>
+		<div class="add-gallery">
+			<div class="bg-icon">
+				<i class="fa-regular fa-image"></i>
+			</div>
+			<button>+ Ajouter photo</button>
+			<p>jpg, png : 4mo max</p>
+		</div>
+		<form id="upload-photo" action="http://localhost:5678/api/works">
+			<label for="title">Titre</label>
+			<input type="text" name="title" id="title">
+			<label for="category" name="category"></label>
+			<select name="category" id="category">
+				<option value="null"></option>
+				<option value="1">Objets</option>
+				<option value="2">Appartements</option>
+				<option value="3">Hotels & restaurants</option>				
+			</select>
+		</form>
+		<div class="grey-line"></div>
+		<button>Valider</button>		
 	</div>
 </aside>
 <header>
@@ -34,7 +59,7 @@
 		<ul>
 			<li>projets</li>
 			<li>contact</li>
-			<li><a class="jsLogin" href="login.html">login</a></li>
+			<li><a class="js-login" href="login.html">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -43,10 +68,10 @@
 	<section id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="Photo de Sophie Bluel">
-			<a href="#modal1" class="editor-mode js-modal"><i class="fa-regular fa-pen-to-square fa-lg"></i>modifier</a></h2>
+			<a href="#modal1" class="editor-mode js-modal"><i class="fa-regular fa-pen-to-square fa-lg"></i>modifier</a>
 		</figure>
 		<article>
-			<a href="#modal1" class="editor-mode js-modal"><i class="fa-regular fa-pen-to-square fa-lg"></i>modifier</a></h2>
+			<a href="#modal1" class="editor-mode js-modal"><i class="fa-regular fa-pen-to-square fa-lg"></i>modifier</a>
 			<h2>Designer d'espace</h2>
 			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
 			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
