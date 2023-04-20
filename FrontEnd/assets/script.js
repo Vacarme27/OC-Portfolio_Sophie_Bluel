@@ -54,15 +54,13 @@ filtreBtn.forEach(function(tableau) {
     if (categorie) {
       worksFiltre = works.filter(function(search) {
         return search.categoryId === categorie;        
-      });
-      console.log(worksFiltre);
+      });      
     } else {
       worksFiltre = works;
     }
     document.querySelector(".gallery").innerHTML = "";
     createGallery(worksFiltre);
-    activeBouton(tableau.bouton);
-    console.log(tableau.bouton);
+    activeBouton(tableau.bouton);    
   });
 });
 
@@ -107,27 +105,31 @@ const openModal = function (event) {
   modal.querySelector('.js-close-modal').addEventListener('click', closeModal)
   modal.querySelector('.js-close-modal-gallery').addEventListener('click', closeModal)
   modal.querySelector('.js-stop-modal').addEventListener('click', stopPropagation)
-  modal.querySelector('.js-stop-modal-gallery').addEventListener('click', stopPropagation) 
+  modal.querySelector('.js-stop-modal-gallery').addEventListener('click', stopPropagation)  
 }
 
 const closeModal = function (event) {
   if (modal === null) return
-  event.preventDefault()  
-  modal.style.display = "none"
+  event.preventDefault()
+  window.setTimeout(function() { 
+    modal.style.display = "none"
+    modal = null  
+  }, 500)  
   modal.setAttribute('aria-hidden', 'true')  
   modal.removeEventListener('click', closeModal)
   modal.querySelector('.js-close-modal').removeEventListener('click', closeModal)
   modal.querySelector('.js-close-modal-gallery').removeEventListener('click', closeModal)
   modal.querySelector('.js-stop-modal').removeEventListener('click', stopPropagation)
-  modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation)
-  modal = null
+  modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation)  
 
-  const firstPage = document.querySelector('.modal-wrapper');
+  window.setTimeout(function(){
+    const firstPage = document.querySelector('.modal-wrapper');
   const secondPage = document.querySelector('.modal-add-gallery');
   if (secondPage.style.display !== "none") {
     secondPage.style.display = "none";
     firstPage.style.display = "flex";
   }
+  },500)
 }
 
 const stopPropagation = function (event){
@@ -205,8 +207,76 @@ addPhotoBtn.addEventListener("click", function() {
   modalAddGallery.style.display = "block";
 });
 
-//_________Retour Sur la Modale ______________
+//_________Retour Sur La Modale ______________
+
 backArrow.addEventListener("click", function() {
   modalWrapper.style.display = "flex";
   modalAddGallery.style.display = "none";
+});
+
+//______________Ajout De Travaux________________
+
+const modalGalleryButton = document.querySelector(".modal-gallery-button");
+const uploadPhoto = document.querySelector("#upload-photo");
+const newInput = document.createElement("input");
+
+newInput.type = "file";
+newInput.name = "image";
+newInput.accept = ".png, .jpg, .jpeg";
+newInput.style.display = "none";
+uploadPhoto.appendChild(newInput);
+
+modalGalleryButton.addEventListener("click", function() {
+  newInput.click();
+});
+
+newInput.addEventListener("change", function() {
+  const file = newInput.files[0];
+  const modal = document.querySelector(".modal-add-gallery");
+  const title = modal.querySelector("#title");
+  const category = modal.querySelector("#category");
+  const validate = modal.querySelector(".modal-gallery-button-validate");
+
+  [title, category].forEach(function(field) {
+    field.addEventListener("input", function() {      
+      var fieldsCompleted = false;
+      if (title.value.trim() !== "" && category.value !== "null") {
+        fieldsCompleted = true;
+      }      
+      if (fieldsCompleted) {
+        validate.style.backgroundColor = "#1D6154";
+      } else {
+        validate.style.backgroundColor = "";
+      }
+    });
+  });
+
+  validate.addEventListener("click", function(event) {
+    event.preventDefault();
+    const newForm = new FormData();
+    newForm.append("image", file);
+    newForm.append("title", title.value);
+    newForm.append("category", category.value);
+
+    fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("valideToken")}`
+      },
+      body: newForm,
+    })
+      .then(function(response) {
+        return response.json();
+      })        
+      .catch(function(error) {
+        console.error(error);
+      });
+  });
+
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(file);
+  const addGallery = modal.querySelector(".add-gallery");
+  addGallery.appendChild(img);
+  addGallery.querySelector("p").style.display = "none";
+  addGallery.querySelector("button").style.display = "none";
 });
