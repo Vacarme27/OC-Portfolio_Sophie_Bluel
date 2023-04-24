@@ -152,6 +152,9 @@ document.querySelectorAll('.js-modal').forEach(a => {
 })
 
 //______________Affichage Gallerie Modale______________
+//TEST
+
+//TEST
 
 const modalGalleryShow = document.querySelector('#modal-gallery');
 const modalElements = document.querySelectorAll('.js-modal');
@@ -191,6 +194,31 @@ modalElements.forEach(function(a) {
   });
 });
 
+//______________Supression de toute la gallerie___________
+
+const deleteGalleryBtn = document.querySelector(".del-gallery");
+deleteGalleryBtn.addEventListener("click", function() {
+  const isConfirmed = confirm("Êtes-vous sûr de vouloir supprimer la galerie ?");
+  if (isConfirmed) {
+    deleteGallery();    
+  }
+});
+
+async function deleteGallery() {  
+  for (const work of works) {
+    const url = `http://localhost:5678/api/works/${work.id}`;
+    await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("valideToken")}`,
+    } 
+    });
+  }  
+  const gallery = document.querySelector(".gallery");
+  gallery.innerHTML = "";
+  modalGalleryShow.innerHTML = "";
+}
+
 //______________Mise à jour de la gallerie lors de la suppresion_________________
 
 function deleteImage(imageId) {
@@ -201,8 +229,7 @@ function deleteImage(imageId) {
     }
   })
   .then(function(response) {
-    if (response.ok) {
-      // Supprimer l'élément de la galerie
+    if (response.ok) {      
       const galleryItem = document.querySelector(`[data-id="${imageId}"]`);
       galleryItem.remove();
     } else {
@@ -237,7 +264,6 @@ backArrow.addEventListener("click", function() {
 
 // TEST
 
-
 // TEST
 
 const modalGalleryButton = document.querySelector(".modal-gallery-button");
@@ -254,7 +280,7 @@ modalGalleryButton.addEventListener("click", function() {
   newInputImage.click();
 });
 
-newInputImage.addEventListener("change", function() {
+newInputImage.addEventListener("change", function() {  
   const file = newInputImage.files[0];
   addImageToForm(file);
   const modal = document.querySelector(".modal-add-gallery");
@@ -289,9 +315,9 @@ newInputImage.addEventListener("change", function() {
         "Authorization": `Bearer ${localStorage.getItem("valideToken")}`
       },
       body: newForm,
-    })    
-      .then(function(response) {
-        uploadPhoto.reset();
+    })
+      .then(function(response) {        
+        uploadPhoto.reset();        
         return response.json();
       })  
       .then(function(data) {
@@ -305,7 +331,9 @@ newInputImage.addEventListener("change", function() {
   });  
 });
 
-//______Fonction pour ajouter l'image au formulaire_____
+// ______Fonction pour ajouter l'image au formulaire_____
+// TEST
+// TEST
 
 function addImageToForm(file) {
   const img = document.createElement("img");
@@ -327,7 +355,7 @@ function addImageToForm(file) {
     resetForm.remove();
     addGallery.querySelector("p").style.display = "block";
     addGallery.querySelector("button").style.display = "block";
-    resetFormAndImage();
+    resetFormAndImage();    
   });
 }
 
@@ -346,8 +374,7 @@ function resetFormAndImage() {
 
 //____________Réinitialise l'image de la modale__________
 
-function resetModal() {
-  // Supprimer l'image ajoutée
+function resetModal() {  
   const addGallery = document.querySelector(".add-gallery");
   const img = addGallery.querySelector("img");  
   if (img) {
