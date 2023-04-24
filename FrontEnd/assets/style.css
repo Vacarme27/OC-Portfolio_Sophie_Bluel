@@ -444,6 +444,21 @@ footer nav ul {
 	text-align: center;
 }
 
+.trash-icon-del-photo{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: black;
+	color: #fff;
+	position: absolute;
+	top: 0px;
+	right: 0px;	
+	cursor: pointer;	
+	text-align: center;
+	font-size: 20px;
+	padding: 5px;	
+}
+
 .modal-add-gallery{		
 	overflow: auto;
 	background-color: #fff;
@@ -518,7 +533,7 @@ footer nav ul {
 	height: 100%;
 }	
 
-.add-gallery i {
+.add-gallery-icon{
 	color:#B9C5CC;
 	font-size: 58px;
 }

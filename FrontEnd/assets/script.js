@@ -8,12 +8,20 @@ const btnObjets = document.querySelector(".btn-objets");
 const btnAppartements = document.querySelector(".btn-appartements");
 const btnHotels = document.querySelector(".btn-hotels");
 
+//___________Création de la gallerie________
+
 function createGallery(works){
   for (let i = 0; i < works.length; i++) {
   
-    const gallery = works[i];
-  
+    const gallery = works[i];  
     const divGallery = document.querySelector(".gallery");
+
+
+    //Si l'id existe déjà on ne recrée pas de doublon
+    const existingElement = divGallery.querySelector(`[data-id="${gallery.id}"]`);
+    if (existingElement) {
+      continue;
+    }    
   
     const figureElement = document.createElement("figure");
     
@@ -26,7 +34,8 @@ function createGallery(works){
     
     divGallery.appendChild(figureElement);
     figureElement.appendChild(imageElement);
-    figureElement.appendChild(nomElement);
+    figureElement.appendChild(nomElement);    
+    figureElement.setAttribute("data-id", gallery.id);
   }
 };
 createGallery(works);
@@ -145,6 +154,7 @@ document.querySelectorAll('.js-modal').forEach(a => {
 const modalGalleryShow = document.querySelector('#modal-gallery');
 const modalElements = document.querySelectorAll('.js-modal');
 
+
 modalElements.forEach(function(a) {
   a.addEventListener('click', function(event) {
     event.preventDefault();
@@ -168,32 +178,41 @@ modalElements.forEach(function(a) {
 
         modalGalleryShow.appendChild(imgContainer);
 
-        //___________Suppression des travaux du DOM depuis l'API________
-     
         const trashIcon = imgContainer.querySelector('.trash-icon');
         trashIcon.addEventListener('click', function() {
           const imageId = imgContainer.getAttribute('data-id');
-          fetch(`http://localhost:5678/api/works/${imageId}`, {
-            method: 'DELETE',
-            headers: {
-              "Authorization": `Bearer ${localStorage.getItem("valideToken")}`,
-            }
-          })
-          .then(function(response) {
-            if (response.ok) {           
-            imgContainer.remove();
-            } else {
-            console.error(`Impossible de supprimer l'image ${imageId} de l'API.`);
-            }
-          })
-          .catch(function(error) {
-            console.error(`Erreur lors de la suppression de l'image ${imageId} de l'API :`, error);
-          });
+          deleteImage(imageId);
+          imgContainer.remove();
         });
       });
     });
   });
 });
+
+//______________Mise à jour de la gallerie lors de la suppresion_________________
+
+function deleteImage(imageId) {
+  fetch(`http://localhost:5678/api/works/${imageId}`, {
+    method: 'DELETE',
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("valideToken")}`,
+    }
+  })
+  .then(function(response) {
+    if (response.ok) {
+      // Supprimer l'élément de la galerie
+      const galleryItem = document.querySelector(`[data-id="${imageId}"]`);
+      galleryItem.remove();
+    } else {
+      console.error(`Impossible de supprimer l'image ${imageId} de l'API.`);
+    }
+  })
+  .catch(function(error) {
+    console.error(`Erreur lors de la suppression de l'image ${imageId} de l'API :`, error);
+  });
+}
+
+
 
 //_________Affichage Add Gallery___________
 
@@ -218,20 +237,22 @@ backArrow.addEventListener("click", function() {
 
 const modalGalleryButton = document.querySelector(".modal-gallery-button");
 const uploadPhoto = document.querySelector("#upload-photo");
-const newInput = document.createElement("input");
+const newInputImage = document.createElement("input");
 
-newInput.type = "file";
-newInput.name = "image";
-newInput.accept = ".png, .jpg, .jpeg";
-newInput.style.display = "none";
-uploadPhoto.appendChild(newInput);
+newInputImage.type = "file";
+newInputImage.name = "image";
+newInputImage.accept = ".png, .jpg, .jpeg";
+newInputImage.style.display = "none";
+uploadPhoto.appendChild(newInputImage);
 
 modalGalleryButton.addEventListener("click", function() {
-  newInput.click();
+
+  newInputImage.click();
 });
 
-newInput.addEventListener("change", function() {
-  const file = newInput.files[0];
+newInputImage.addEventListener("change", function() {
+  const file = newInputImage.files[0];
+  addImageToForm(file);
   const modal = document.querySelector(".modal-add-gallery");
   const title = modal.querySelector("#title");
   const category = modal.querySelector("#category");
@@ -264,19 +285,74 @@ newInput.addEventListener("change", function() {
         "Authorization": `Bearer ${localStorage.getItem("valideToken")}`
       },
       body: newForm,
-    })
+    })    
       .then(function(response) {
+        uploadPhoto.reset();
         return response.json();
-      })        
+      })  
+      .then(function(data) {
+        const divGallery = document.querySelector(".gallery");
+        createGallery([data], divGallery);
+      })      
       .catch(function(error) {
         console.error(error);
-      });
+      });       
+      
+      resetModal();      
   });
 
+  // const img = document.createElement("img");
+  // //TEST
+  // const resetForm = document.createElement("i");
+  // resetForm.classList.add("fa-solid");
+  // resetForm.classList.add("fa-trash-can");
+  // resetForm.classList.add("trash-icon-del-photo");
+  // //TEST
+  // img.src = URL.createObjectURL(file);
+  // const addGallery = modal.querySelector(".add-gallery");
+  // addGallery.appendChild(img);
+  // //TEST
+  // addGallery.appendChild(resetForm)
+  // //TEST
+  // addGallery.querySelector("p").style.display = "none";
+  // addGallery.querySelector("button").style.display = "none";
+});
+
+//______Fonction pour ajouter l'image au formulaire___
+function addImageToForm(file) {
   const img = document.createElement("img");
   img.src = URL.createObjectURL(file);
   const addGallery = modal.querySelector(".add-gallery");
   addGallery.appendChild(img);
+
+  const resetForm = document.createElement("i");
+  resetForm.classList.add("fa-solid");
+  resetForm.classList.add("fa-trash-can");
+  resetForm.classList.add("trash-icon-del-photo");
+  addGallery.appendChild(resetForm);
+
   addGallery.querySelector("p").style.display = "none";
   addGallery.querySelector("button").style.display = "none";
-});
+
+  resetForm.addEventListener("click", function() {
+    img.remove();
+    resetForm.remove();
+    addGallery.querySelector("p").style.display = "block";
+    addGallery.querySelector("button").style.display = "block";
+  });
+}
+
+
+
+//____________Réinitialise l'image de la modale__________
+
+function resetModal() {
+  // Supprimer l'image ajoutée
+  const addGallery = document.querySelector(".add-gallery");
+  const img = addGallery.querySelector("img");
+  if (img) {
+    img.remove();
+  }
+  addGallery.querySelector("p").style.display = "block";
+  addGallery.querySelector("button").style.display = "block"; 
+}
