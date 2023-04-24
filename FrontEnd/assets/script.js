@@ -9,7 +9,9 @@ const btnAppartements = document.querySelector(".btn-appartements");
 const btnHotels = document.querySelector(".btn-hotels");
 
 //___________Création de la gallerie________
+//TEST
 
+//TEST
 function createGallery(works){
   for (let i = 0; i < works.length; i++) {
   
@@ -21,7 +23,7 @@ function createGallery(works){
     const existingElement = divGallery.querySelector(`[data-id="${gallery.id}"]`);
     if (existingElement) {
       continue;
-    }    
+    }
   
     const figureElement = document.createElement("figure");
     
@@ -212,8 +214,6 @@ function deleteImage(imageId) {
   });
 }
 
-
-
 //_________Affichage Add Gallery___________
 
 const addPhotoBtn = document.querySelector(".modal-button");
@@ -235,6 +235,11 @@ backArrow.addEventListener("click", function() {
 
 //______________Ajout De Travaux________________
 
+// TEST
+
+
+// TEST
+
 const modalGalleryButton = document.querySelector(".modal-gallery-button");
 const uploadPhoto = document.querySelector("#upload-photo");
 const newInputImage = document.createElement("input");
@@ -246,7 +251,6 @@ newInputImage.style.display = "none";
 uploadPhoto.appendChild(newInputImage);
 
 modalGalleryButton.addEventListener("click", function() {
-
   newInputImage.click();
 });
 
@@ -296,29 +300,13 @@ newInputImage.addEventListener("change", function() {
       })      
       .catch(function(error) {
         console.error(error);
-      });       
-      
+      });
       resetModal();      
-  });
-
-  // const img = document.createElement("img");
-  // //TEST
-  // const resetForm = document.createElement("i");
-  // resetForm.classList.add("fa-solid");
-  // resetForm.classList.add("fa-trash-can");
-  // resetForm.classList.add("trash-icon-del-photo");
-  // //TEST
-  // img.src = URL.createObjectURL(file);
-  // const addGallery = modal.querySelector(".add-gallery");
-  // addGallery.appendChild(img);
-  // //TEST
-  // addGallery.appendChild(resetForm)
-  // //TEST
-  // addGallery.querySelector("p").style.display = "none";
-  // addGallery.querySelector("button").style.display = "none";
+  });  
 });
 
-//______Fonction pour ajouter l'image au formulaire___
+//______Fonction pour ajouter l'image au formulaire_____
+
 function addImageToForm(file) {
   const img = document.createElement("img");
   img.src = URL.createObjectURL(file);
@@ -339,20 +327,32 @@ function addImageToForm(file) {
     resetForm.remove();
     addGallery.querySelector("p").style.display = "block";
     addGallery.querySelector("button").style.display = "block";
+    resetFormAndImage();
   });
 }
 
+function resetFormAndImage() {
+  const uploadPhoto = document.querySelector("#upload-photo");
+  const title = document.querySelector("#title");
+  const category = document.querySelector("#category");
+  const addGallery = document.querySelector(".add-gallery");
 
+  uploadPhoto.reset();
+  title.value = "";
+  category.value = "null";
+  addGallery.querySelector("p").style.display = "block";
+  addGallery.querySelector("button").style.display = "block";  
+}
 
 //____________Réinitialise l'image de la modale__________
 
 function resetModal() {
   // Supprimer l'image ajoutée
   const addGallery = document.querySelector(".add-gallery");
-  const img = addGallery.querySelector("img");
+  const img = addGallery.querySelector("img");  
   if (img) {
     img.remove();
   }
   addGallery.querySelector("p").style.display = "block";
-  addGallery.querySelector("button").style.display = "block"; 
+  addGallery.querySelector("button").style.display = "block";  
 }

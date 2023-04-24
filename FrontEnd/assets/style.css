@@ -459,6 +459,11 @@ footer nav ul {
 	padding: 5px;	
 }
 
+.modal-gallery-error-message{
+	color: red;
+	font-size: 16px;
+	display: none;
+}
 .modal-add-gallery{		
 	overflow: auto;
 	background-color: #fff;
