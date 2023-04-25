@@ -9,27 +9,18 @@ const btnAppartements = document.querySelector(".btn-appartements");
 const btnHotels = document.querySelector(".btn-hotels");
 
 //___________Création de la gallerie________
-//TEST
 
-//TEST
 function createGallery(works){
   for (let i = 0; i < works.length; i++) {
   
     const gallery = works[i];  
-    const divGallery = document.querySelector(".gallery");
-
-
-    //Si l'id existe déjà on ne recrée pas de doublon
-    const existingElement = divGallery.querySelector(`[data-id="${gallery.id}"]`);
-    if (existingElement) {
-      continue;
-    }
+    const divGallery = document.querySelector(".gallery");   
   
     const figureElement = document.createElement("figure");
     
     const imageElement = document.createElement("img");
     imageElement.src = gallery.imageUrl;
-    imageElement.alt = gallery.title;  
+    imageElement.alt = gallery.title;
     
     const nomElement = document.createElement("figcaption");
     nomElement.innerText = gallery.title;
@@ -108,35 +99,36 @@ editorMode();
 let modal = null
 
 const openModal = function (event) {
-  event.preventDefault()
-  modal = document.querySelector(event.target.getAttribute('href'))  
-  modal.style.display = null
-  modal.removeAttribute('aria-hidden')  
-  modal.addEventListener('click', closeModal)
-  modal.querySelector('.js-close-modal').addEventListener('click', closeModal)
-  modal.querySelector('.js-close-modal-gallery').addEventListener('click', closeModal)
-  modal.querySelector('.js-stop-modal').addEventListener('click', stopPropagation)
-  modal.querySelector('.js-stop-modal-gallery').addEventListener('click', stopPropagation)  
+  event.preventDefault();
+  modal = document.querySelector(event.target.getAttribute('href'));  
+  modal.style.display = null; 
+  modal.removeAttribute('aria-hidden');
+  modal.addEventListener('click', closeModal);
+  modal.querySelector('.js-close-modal').addEventListener('click', closeModal);
+  modal.querySelector('.js-close-modal-gallery').addEventListener('click', closeModal);
+  modal.querySelector('.js-stop-modal').addEventListener('click', stopPropagation);
+  modal.querySelector('.js-stop-modal-gallery').addEventListener('click', stopPropagation);  
 }
 
 const closeModal = function (event) {
   if (modal === null) return
-  event.preventDefault()
+  event.preventDefault();
   window.setTimeout(function() { 
-    modal.style.display = "none"
-    modal = null  
+    modal.style.display = "none";
+    modal = null ;
   }, 500)  
-  modal.setAttribute('aria-hidden', 'true')  
-  modal.removeEventListener('click', closeModal)
-  modal.querySelector('.js-close-modal').removeEventListener('click', closeModal)
-  modal.querySelector('.js-close-modal-gallery').removeEventListener('click', closeModal)
-  modal.querySelector('.js-stop-modal').removeEventListener('click', stopPropagation)
-  modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation)  
+  modal.setAttribute('aria-hidden', 'true');
+  modal.removeEventListener('click', closeModal);
+  modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
+  modal.querySelector('.js-close-modal-gallery').removeEventListener('click', closeModal);
+  modal.querySelector('.js-stop-modal').removeEventListener('click', stopPropagation);
+  modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation);  
 
-  window.setTimeout(function(){
-    const firstPage = document.querySelector('.modal-wrapper');
+  const firstPage = document.querySelector('.modal-wrapper');
   const secondPage = document.querySelector('.modal-add-gallery');
-  if (secondPage.style.display !== "none") {
+
+  window.setTimeout(function(){  
+  if (secondPage.style.display !== "none") {    
     secondPage.style.display = "none";
     firstPage.style.display = "flex";
   }
@@ -144,63 +136,65 @@ const closeModal = function (event) {
 }
 
 const stopPropagation = function (event){
-  event.stopPropagation()
+  event.stopPropagation();
 }
 
 document.querySelectorAll('.js-modal').forEach(a => {
-  a.addEventListener('click', openModal)
+  a.addEventListener('click', openModal);
 })
 
 //______________Affichage Gallerie Modale______________
-//TEST
-
-//TEST
 
 const modalGalleryShow = document.querySelector('#modal-gallery');
 const modalElements = document.querySelectorAll('.js-modal');
 
+function galleryInModal(modalElements, modalGalleryShow) {
+  modalElements.forEach(function(a) {
+    a.addEventListener('click', function(event) {
+      event.preventDefault();
+      modalGalleryShow.innerHTML = "";
 
-modalElements.forEach(function(a) {
-  a.addEventListener('click', function(event) {
-    event.preventDefault();
-    modalGalleryShow.innerHTML = "";
+      fetch("http://localhost:5678/api/works/")
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          data.forEach(function(image) {
+            const imgContainer = document.createElement("div");
+            imgContainer.classList.add("img-container");
+            imgContainer.setAttribute("data-id", image.id);
+            imgContainer.innerHTML = `
+              <img src="${image.imageUrl}" alt="${image.title}">
+              <div class="trash-icon-container">
+                <i class="fa-solid fa-trash-can trash-icon"></i>
+              </div>
+              <p>éditer</p>`;
 
-    fetch("http://localhost:5678/api/works/")
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data) {
-      data.forEach(function(image) {
-        const imgContainer = document.createElement("div");
-        imgContainer.classList.add("img-container");
-        imgContainer.setAttribute("data-id", image.id);
-        imgContainer.innerHTML = `
-          <img src="${image.imageUrl}" alt="${image.title}">
-          <div class="trash-icon-container">
-            <i class="fa-solid fa-trash-can trash-icon"></i>
-          </div>
-          <p>éditer</p>`;
+            modalGalleryShow.appendChild(imgContainer);
 
-        modalGalleryShow.appendChild(imgContainer);
-
-        const trashIcon = imgContainer.querySelector('.trash-icon');
-        trashIcon.addEventListener('click', function() {
-          const imageId = imgContainer.getAttribute('data-id');
-          deleteImage(imageId);
-          imgContainer.remove();
+            const trashIcon = imgContainer.querySelector('.trash-icon');
+            trashIcon.addEventListener('click', function() {
+              const imageId = imgContainer.getAttribute('data-id');
+              deleteImage(imageId);
+              imgContainer.remove();
+            });
+          });
         });
-      });
     });
   });
-});
+};
+
+galleryInModal(modalElements, modalGalleryShow);
 
 //______________Supression de toute la gallerie___________
 
 const deleteGalleryBtn = document.querySelector(".del-gallery");
+
 deleteGalleryBtn.addEventListener("click", function() {
   const isConfirmed = confirm("Êtes-vous sûr de vouloir supprimer la galerie ?");
+
   if (isConfirmed) {
-    deleteGallery();    
+    deleteGallery(works);
   }
 });
 
@@ -216,7 +210,7 @@ async function deleteGallery() {
   }  
   const gallery = document.querySelector(".gallery");
   gallery.innerHTML = "";
-  modalGalleryShow.innerHTML = "";
+  modalGalleryShow.innerHTML="";
 }
 
 //______________Mise à jour de la gallerie lors de la suppresion_________________
@@ -248,66 +242,67 @@ const backArrow  = document.querySelector('.arrow-left');
 const modalWrapper = document.querySelector(".modal-wrapper");
 const modalAddGallery = document.querySelector(".modal-add-gallery");
 
-addPhotoBtn.addEventListener("click", function() {
+addPhotoBtn.addEventListener("click", function() {  
   modalWrapper.style.display = "none";
   modalAddGallery.style.display = "block";
 });
 
 //_________Retour Sur La Modale ______________
 
-backArrow.addEventListener("click", function() {
+backArrow.addEventListener("click", function() {  
   modalWrapper.style.display = "flex";
   modalAddGallery.style.display = "none";
 });
 
 //______________Ajout De Travaux________________
 
-// TEST
-
-// TEST
-
 const modalGalleryButton = document.querySelector(".modal-gallery-button");
-const uploadPhoto = document.querySelector("#upload-photo");
+const uploadPhotoButton = document.querySelector("#upload-photo");
 const newInputImage = document.createElement("input");
+const errorMessage = document.querySelector("#modal-gallery-error-message");
+const titleForm = document.querySelector("#title");
+const categoryForm = document.querySelector("#category");
+const validateButton = document.querySelector(".modal-gallery-button-validate");
 
 newInputImage.type = "file";
 newInputImage.name = "image";
 newInputImage.accept = ".png, .jpg, .jpeg";
 newInputImage.style.display = "none";
-uploadPhoto.appendChild(newInputImage);
+uploadPhotoButton.appendChild(newInputImage);
 
 modalGalleryButton.addEventListener("click", function() {
   newInputImage.click();
 });
-
 newInputImage.addEventListener("change", function() {  
   const file = newInputImage.files[0];
-  addImageToForm(file);
-  const modal = document.querySelector(".modal-add-gallery");
-  const title = modal.querySelector("#title");
-  const category = modal.querySelector("#category");
-  const validate = modal.querySelector(".modal-gallery-button-validate");
+  addImageToForm(file); 
 
-  [title, category].forEach(function(field) {
+  [titleForm, categoryForm].forEach(function(field) {
     field.addEventListener("input", function() {      
       var fieldsCompleted = false;
-      if (title.value.trim() !== "" && category.value !== "null") {
+      if (titleForm.value.trim() !== "" && categoryForm.value !== "null") {
         fieldsCompleted = true;
       }      
       if (fieldsCompleted) {
-        validate.style.backgroundColor = "#1D6154";
+        validateButton.style.backgroundColor = "#1D6154";
       } else {
-        validate.style.backgroundColor = "";
+        validateButton.style.backgroundColor = "";
       }
     });
   });
 
-  validate.addEventListener("click", function(event) {
+  validateButton.addEventListener("click", function(event) {
     event.preventDefault();
     const newForm = new FormData();
     newForm.append("image", file);
-    newForm.append("title", title.value);
-    newForm.append("category", category.value);
+    newForm.append("title", titleForm.value);
+    newForm.append("category", categoryForm.value);    
+     
+    if (titleForm.value.trim() === "" || categoryForm.value === "null") {
+
+      errorMessage.style.display = "block";
+      return;
+    }    
 
     fetch("http://localhost:5678/api/works", {
       method: "POST",
@@ -317,12 +312,12 @@ newInputImage.addEventListener("change", function() {
       body: newForm,
     })
       .then(function(response) {        
-        uploadPhoto.reset();        
+        uploadPhotoButton.reset();        
         return response.json();
       })  
       .then(function(data) {
         const divGallery = document.querySelector(".gallery");
-        createGallery([data], divGallery);
+        createGallery([data], divGallery);        
       })      
       .catch(function(error) {
         console.error(error);
@@ -332,54 +327,47 @@ newInputImage.addEventListener("change", function() {
 });
 
 // ______Fonction pour ajouter l'image au formulaire_____
-// TEST
-// TEST
+
+const trashIconResetForm = document.querySelector(".trash-icon-del-photo");
+const addGallery = document.querySelector(".add-gallery"); 
+
 
 function addImageToForm(file) {
   const img = document.createElement("img");
   img.src = URL.createObjectURL(file);
-  const addGallery = modal.querySelector(".add-gallery");
+  
   addGallery.appendChild(img);
-
-  const resetForm = document.createElement("i");
-  resetForm.classList.add("fa-solid");
-  resetForm.classList.add("fa-trash-can");
-  resetForm.classList.add("trash-icon-del-photo");
-  addGallery.appendChild(resetForm);
-
   addGallery.querySelector("p").style.display = "none";
-  addGallery.querySelector("button").style.display = "none";
+  addGallery.querySelector("button").style.display = "none";  
+  trashIconResetForm.style.display = "block"  
 
-  resetForm.addEventListener("click", function() {
+  trashIconResetForm.addEventListener("click", function() {
     img.remove();
-    resetForm.remove();
-    addGallery.querySelector("p").style.display = "block";
-    addGallery.querySelector("button").style.display = "block";
     resetFormAndImage();    
   });
 }
 
-function resetFormAndImage() {
-  const uploadPhoto = document.querySelector("#upload-photo");
-  const title = document.querySelector("#title");
-  const category = document.querySelector("#category");
-  const addGallery = document.querySelector(".add-gallery");
+function resetFormAndImage() {   
 
-  uploadPhoto.reset();
-  title.value = "";
-  category.value = "null";
+  uploadPhotoButton.reset();
+  titleForm.value = "";
+  categoryForm.value = "null";
   addGallery.querySelector("p").style.display = "block";
-  addGallery.querySelector("button").style.display = "block";  
+  addGallery.querySelector("button").style.display = "block";
+  trashIconResetForm.style.display = "none";
+  errorMessage.style.display = "none";
 }
 
 //____________Réinitialise l'image de la modale__________
 
-function resetModal() {  
-  const addGallery = document.querySelector(".add-gallery");
-  const img = addGallery.querySelector("img");  
+function resetModal() {
+  const img = addGallery.querySelector("img");
   if (img) {
     img.remove();
   }
   addGallery.querySelector("p").style.display = "block";
-  addGallery.querySelector("button").style.display = "block";  
+  addGallery.querySelector("button").style.display = "block";
+  trashIconResetForm.style.display = "none";
+  errorMessage.style.display = "none";
+  validateButton.style.backgroundColor = "";
 }
