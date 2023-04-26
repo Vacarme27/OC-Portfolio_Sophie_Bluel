@@ -123,7 +123,7 @@ const openModal = function (event) {
 
 const closeModal = function (event) {
   if (modal === null) return
-  event.preventDefault();
+  event.preventDefault();  
   window.setTimeout(function() { 
     modal.style.display = "none";
     modal = null ;
@@ -202,7 +202,7 @@ galleryInModal(modalElements, modalGalleryShow);
 const deleteGalleryBtn = document.querySelector(".del-gallery");
 
 deleteGalleryBtn.addEventListener("click", function() {
-  const isConfirmed = confirm("Êtes-vous sûr de vouloir supprimer la galerie ?");
+  const isConfirmed = confirm("Êtes-vous sûr de vouloir supprimer tout les éléments de la galerie ?");
 
   if (isConfirmed) {
     deleteGallery(works);
@@ -276,12 +276,16 @@ const categoryForm = document.querySelector("#category");
 const validateButton = document.querySelector(".modal-gallery-button-validate");
 const trashIconResetForm = document.querySelector(".trash-icon-del-photo");
 const errorMessage = document.querySelector("#modal-gallery-error-message");
+
+
+const inputImage = document.createElement("input");
 let newInputImage;
 
 function resetFormAndImage() {   
   uploadPhotoButton.reset();  
   titleForm.value = "";
   categoryForm.value = "null";
+  
   var images = addGallery.querySelectorAll("img");
   for (var i = 0; i < images.length; i++) {
     images[i].remove();
@@ -295,8 +299,7 @@ function resetFormAndImage() {
   
 }
 
-function createNewInputImage() {
-  const inputImage = document.createElement("input");
+function createNewInputImage() {  
   inputImage.type = "file";
   inputImage.name = "image";
   inputImage.accept = ".png, .jpg, .jpeg";
@@ -318,7 +321,7 @@ function addImageToForm(file) {
   addGallery.appendChild(img);
   addGallery.querySelector("p").style.display = "none";
   addGallery.querySelector("button").style.display = "none";  
-  trashIconResetForm.style.display = "block"  
+  trashIconResetForm.style.display = "block";  
 
   trashIconResetForm.addEventListener("click", function() {
     img.remove();
@@ -333,10 +336,10 @@ modalGalleryButton.addEventListener("click", function() {
   newInputImage.click();
 });
 
-[titleForm, categoryForm].forEach(function(field) {
+[titleForm, categoryForm, inputImage].forEach(function(field) {
   field.addEventListener("input", function() {      
     var fieldsCompleted = false;
-    if (titleForm.value.trim() !== "" && categoryForm.value !== "null") {
+    if (titleForm.value.trim() !== "" && categoryForm.value !== "null" && inputImage.files.length > 0) {
       fieldsCompleted = true;
     }      
     validateButton.style.backgroundColor = fieldsCompleted ? "#1D6154" : "";
@@ -344,9 +347,8 @@ modalGalleryButton.addEventListener("click", function() {
 });
 
 validateButton.addEventListener("click", function(event) {
-  event.preventDefault();
-  
-  const file = newInputImage.files[0];
+  event.preventDefault(); 
+  const file = newInputImage.files[0];  
   if (!file || titleForm.value.trim() === "" || categoryForm.value === "null") {
     errorMessage.style.display = "block";
     return;
@@ -369,13 +371,13 @@ validateButton.addEventListener("click", function(event) {
     return response.json();
   })  
   .then(function(data) {
-    works.push(data);
-    createGallery(works); 
+    works.push(data);    
+    createGallery(works);
   })      
   .catch(function(error) {
     console.error(error);
   });
-  console.log(works);
+  console.log(modalElements);
 });
 
 resetFormAndImage();

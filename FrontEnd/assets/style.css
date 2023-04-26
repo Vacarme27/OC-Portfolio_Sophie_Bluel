@@ -143,7 +143,7 @@ li:hover, li a:hover {
 #introduction figure {
 	flex: 1
 }
-#introduction img, #introduction a {
+#introduction img{
 	display: block;
 	margin: auto;
 	width: 80%;
@@ -152,6 +152,7 @@ li:hover, li a:hover {
 #introduction a:nth-child(1){
 	margin: 0;
 	margin-bottom: 20px;
+	max-width: fit-content;
 }
 
 #introduction article {
@@ -280,7 +281,8 @@ footer nav ul {
 }
 
 .admin p, .admin p i {
-	color: white;	
+	color: white;
+	cursor: pointer;	
 }
 .admin button{
 	font-family: 'Syne';
@@ -297,8 +299,7 @@ footer nav ul {
 	display: flex;
 	align-items: center;	
 	font-size: 14px;
-	font-weight: 400;
-	cursor: pointer;
+	font-weight: 400;	
 	font-style: 'Work Sans';	
 	color: black;
 }
@@ -306,8 +307,10 @@ footer nav ul {
 	padding-right: 11px;	
 }
 
-#introduction figure a{
-	padding-top: 10px;
+#introduction figure a{	
+	max-width: fit-content;
+	margin-left: 10%;
+	padding-top: 10px;		
 }
 
 /*__________Modal____________*/
