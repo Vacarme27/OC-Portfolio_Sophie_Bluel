@@ -1,39 +1,50 @@
-//Récupération des projets, depuis le fichier JSON
+// Récupération des projets, depuis le fichier JSON
+fetch("http://localhost:5678/api/works/")
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(data) {
+    works = data;
+    createGallery(works);
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
 
-const reponse = await fetch("http://localhost:5678/api/works/");
-const works = await reponse.json();
+//___________Création de la gallerie________
+let works = [];
+const divGallery = document.querySelector(".gallery");
+
+function createGallery(works) {
+  divGallery.innerHTML = "";
+  for (let i = 0; i < works.length; i++) {
+
+    const gallery = works[i];
+
+    const figureElement = document.createElement("figure");
+    const imageElement = document.createElement("img");
+
+    imageElement.src = gallery.imageUrl;
+    imageElement.alt = gallery.title;
+
+    const nomElement = document.createElement("figcaption");
+    nomElement.innerText = gallery.title;
+
+    figureElement.appendChild(imageElement);
+    figureElement.appendChild(nomElement);
+    figureElement.setAttribute("data-id", gallery.id);
+    divGallery.appendChild(figureElement);
+  }
+}
+
+createGallery(works);
+
+//______________Filtres__________________
 
 const btnTous = document.querySelector(".btn-tous");
 const btnObjets = document.querySelector(".btn-objets");
 const btnAppartements = document.querySelector(".btn-appartements");
 const btnHotels = document.querySelector(".btn-hotels");
-
-//___________Création de la gallerie________
-
-function createGallery(works){
-  for (let i = 0; i < works.length; i++) {
-  
-    const gallery = works[i];  
-    const divGallery = document.querySelector(".gallery");   
-  
-    const figureElement = document.createElement("figure");
-    
-    const imageElement = document.createElement("img");
-    imageElement.src = gallery.imageUrl;
-    imageElement.alt = gallery.title;
-    
-    const nomElement = document.createElement("figcaption");
-    nomElement.innerText = gallery.title;
-    
-    divGallery.appendChild(figureElement);
-    figureElement.appendChild(imageElement);
-    figureElement.appendChild(nomElement);    
-    figureElement.setAttribute("data-id", gallery.id);
-  }
-};
-createGallery(works);
-
-//______________Filtres__________________
 
 const filtreBtn = [
   { bouton: btnTous, categorie: null },
@@ -158,7 +169,7 @@ function galleryInModal(modalElements, modalGalleryShow) {
         .then(function(response) {
           return response.json();
         })
-        .then(function(data) {
+        .then(function(data) {          
           data.forEach(function(image) {
             const imgContainer = document.createElement("div");
             imgContainer.classList.add("img-container");
@@ -170,7 +181,7 @@ function galleryInModal(modalElements, modalGalleryShow) {
               </div>
               <p>éditer</p>`;
 
-            modalGalleryShow.appendChild(imgContainer);
+            modalGalleryShow.appendChild(imgContainer);            
 
             const trashIcon = imgContainer.querySelector('.trash-icon');
             trashIcon.addEventListener('click', function() {
@@ -211,6 +222,7 @@ async function deleteGallery() {
   const gallery = document.querySelector(".gallery");
   gallery.innerHTML = "";
   modalGalleryShow.innerHTML="";
+  works =[]; 
 }
 
 //______________Mise à jour de la gallerie lors de la suppresion_________________
@@ -251,86 +263,53 @@ addPhotoBtn.addEventListener("click", function() {
 
 backArrow.addEventListener("click", function() {  
   modalWrapper.style.display = "flex";
-  modalAddGallery.style.display = "none";
+  modalAddGallery.style.display = "none";  
 });
 
 //______________Ajout De Travaux________________
 
 const modalGalleryButton = document.querySelector(".modal-gallery-button");
 const uploadPhotoButton = document.querySelector("#upload-photo");
-const newInputImage = document.createElement("input");
-const errorMessage = document.querySelector("#modal-gallery-error-message");
+const addGallery = document.querySelector(".add-gallery");
 const titleForm = document.querySelector("#title");
 const categoryForm = document.querySelector("#category");
 const validateButton = document.querySelector(".modal-gallery-button-validate");
+const trashIconResetForm = document.querySelector(".trash-icon-del-photo");
+const errorMessage = document.querySelector("#modal-gallery-error-message");
+let newInputImage;
 
-newInputImage.type = "file";
-newInputImage.name = "image";
-newInputImage.accept = ".png, .jpg, .jpeg";
-newInputImage.style.display = "none";
-uploadPhotoButton.appendChild(newInputImage);
+function resetFormAndImage() {   
+  uploadPhotoButton.reset();  
+  titleForm.value = "";
+  categoryForm.value = "null";
+  var images = addGallery.querySelectorAll("img");
+  for (var i = 0; i < images.length; i++) {
+    images[i].remove();
+  }
+  addGallery.querySelector("p").style.display = "block";
+  addGallery.querySelector("button").style.display = "block";
+  trashIconResetForm.style.display = "none";
+  errorMessage.style.display = "none";
+  newInputImage = createNewInputImage();  
+  validateButton.style.backgroundColor = "";
+  
+}
 
-modalGalleryButton.addEventListener("click", function() {
-  newInputImage.click();
-});
-newInputImage.addEventListener("change", function() {  
-  const file = newInputImage.files[0];
-  addImageToForm(file); 
-
-  [titleForm, categoryForm].forEach(function(field) {
-    field.addEventListener("input", function() {      
-      var fieldsCompleted = false;
-      if (titleForm.value.trim() !== "" && categoryForm.value !== "null") {
-        fieldsCompleted = true;
-      }      
-      if (fieldsCompleted) {
-        validateButton.style.backgroundColor = "#1D6154";
-      } else {
-        validateButton.style.backgroundColor = "";
-      }
-    });
+function createNewInputImage() {
+  const inputImage = document.createElement("input");
+  inputImage.type = "file";
+  inputImage.name = "image";
+  inputImage.accept = ".png, .jpg, .jpeg";
+  inputImage.style.display = "none";
+  uploadPhotoButton.appendChild(inputImage);
+  
+  inputImage.addEventListener("change", function() {
+    const file = inputImage.files[0];
+    addImageToForm(file);
   });
 
-  validateButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    const newForm = new FormData();
-    newForm.append("image", file);
-    newForm.append("title", titleForm.value);
-    newForm.append("category", categoryForm.value);    
-     
-    if (titleForm.value.trim() === "" || categoryForm.value === "null") {
-
-      errorMessage.style.display = "block";
-      return;
-    }    
-
-    fetch("http://localhost:5678/api/works", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem("valideToken")}`
-      },
-      body: newForm,
-    })
-      .then(function(response) {        
-        uploadPhotoButton.reset();        
-        return response.json();
-      })  
-      .then(function(data) {
-        const divGallery = document.querySelector(".gallery");
-        createGallery([data], divGallery);        
-      })      
-      .catch(function(error) {
-        console.error(error);
-      });
-      resetModal();      
-  });  
-});
-
-// ______Fonction pour ajouter l'image au formulaire_____
-
-const trashIconResetForm = document.querySelector(".trash-icon-del-photo");
-const addGallery = document.querySelector(".add-gallery"); 
-
+  return inputImage;
+}
 
 function addImageToForm(file) {
   const img = document.createElement("img");
@@ -343,31 +322,60 @@ function addImageToForm(file) {
 
   trashIconResetForm.addEventListener("click", function() {
     img.remove();
-    resetFormAndImage();    
+    resetFormAndImage();
   });
 }
 
-function resetFormAndImage() {   
-
-  uploadPhotoButton.reset();
-  titleForm.value = "";
-  categoryForm.value = "null";
-  addGallery.querySelector("p").style.display = "block";
-  addGallery.querySelector("button").style.display = "block";
-  trashIconResetForm.style.display = "none";
-  errorMessage.style.display = "none";
-}
-
-//____________Réinitialise l'image de la modale__________
-
-function resetModal() {
-  const img = addGallery.querySelector("img");
-  if (img) {
-    img.remove();
+modalGalleryButton.addEventListener("click", function() {
+  if (!newInputImage) {
+    newInputImage = createNewInputImage();
   }
-  addGallery.querySelector("p").style.display = "block";
-  addGallery.querySelector("button").style.display = "block";
-  trashIconResetForm.style.display = "none";
-  errorMessage.style.display = "none";
-  validateButton.style.backgroundColor = "";
-}
+  newInputImage.click();
+});
+
+[titleForm, categoryForm].forEach(function(field) {
+  field.addEventListener("input", function() {      
+    var fieldsCompleted = false;
+    if (titleForm.value.trim() !== "" && categoryForm.value !== "null") {
+      fieldsCompleted = true;
+    }      
+    validateButton.style.backgroundColor = fieldsCompleted ? "#1D6154" : "";
+  });
+});
+
+validateButton.addEventListener("click", function(event) {
+  event.preventDefault();
+  
+  const file = newInputImage.files[0];
+  if (!file || titleForm.value.trim() === "" || categoryForm.value === "null") {
+    errorMessage.style.display = "block";
+    return;
+  }  
+
+  const newForm = new FormData();
+  newForm.append("image", file);
+  newForm.append("title", titleForm.value);
+  newForm.append("category", categoryForm.value); 
+
+  fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("valideToken")}`
+    },
+    body: newForm,
+  })
+  .then(function(response) {        
+    resetFormAndImage();
+    return response.json();
+  })  
+  .then(function(data) {
+    works.push(data);
+    createGallery(works); 
+  })      
+  .catch(function(error) {
+    console.error(error);
+  });
+  console.log(works);
+});
+
+resetFormAndImage();
