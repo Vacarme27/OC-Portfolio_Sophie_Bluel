@@ -133,17 +133,9 @@ const closeModal = function (event) {
   modal.querySelector('.js-close-modal').removeEventListener('click', closeModal);
   modal.querySelector('.js-close-modal-gallery').removeEventListener('click', closeModal);
   modal.querySelector('.js-stop-modal').removeEventListener('click', stopPropagation);
-  modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation);  
+  modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation);
 
-  const firstPage = document.querySelector('.modal-wrapper');
-  const secondPage = document.querySelector('.modal-add-gallery');
-
-  window.setTimeout(function(){  
-  if (secondPage.style.display !== "none") {    
-    secondPage.style.display = "none";
-    firstPage.style.display = "flex";
-  }
-  },500)
+  resetModal()  
 }
 
 const stopPropagation = function (event){
@@ -153,6 +145,18 @@ const stopPropagation = function (event){
 document.querySelectorAll('.js-modal').forEach(a => {
   a.addEventListener('click', openModal);
 })
+
+function resetModal() {
+  const firstPage = document.querySelector('.modal-wrapper');
+  const secondPage = document.querySelector('.modal-add-gallery');
+
+  window.setTimeout(function(){  
+    if (secondPage.style.display !== "none") {    
+      secondPage.style.display = "none";
+      firstPage.style.display = "flex";
+    }
+  },500);
+}
 
 //______________Affichage Gallerie Modale______________
 
@@ -256,14 +260,15 @@ const modalAddGallery = document.querySelector(".modal-add-gallery");
 
 addPhotoBtn.addEventListener("click", function() {  
   modalWrapper.style.display = "none";
-  modalAddGallery.style.display = "block";
+  modalAddGallery.style.display = "block";  
+  resetFormAndImage();
 });
 
 //_________Retour Sur La Modale ______________
 
 backArrow.addEventListener("click", function() {  
   modalWrapper.style.display = "flex";
-  modalAddGallery.style.display = "none";  
+  modalAddGallery.style.display = "none"; 
 });
 
 //______________Ajout De Travaux________________
@@ -279,7 +284,8 @@ const errorMessage = document.querySelector("#modal-gallery-error-message");
 
 
 const inputImage = document.createElement("input");
-let newInputImage;
+let newInputImage = createNewInputImage();
+
 
 function resetFormAndImage() {   
   uploadPhotoButton.reset();  
@@ -293,8 +299,7 @@ function resetFormAndImage() {
   addGallery.querySelector("p").style.display = "block";
   addGallery.querySelector("button").style.display = "block";
   trashIconResetForm.style.display = "none";
-  errorMessage.style.display = "none";
-  newInputImage = createNewInputImage();  
+  errorMessage.style.display = "none";    
   validateButton.style.backgroundColor = "";
   
 }
@@ -342,7 +347,8 @@ modalGalleryButton.addEventListener("click", function() {
     if (titleForm.value.trim() !== "" && categoryForm.value !== "null" && inputImage.files.length > 0) {
       fieldsCompleted = true;
     }      
-    validateButton.style.backgroundColor = fieldsCompleted ? "#1D6154" : "";
+    validateButton.style.backgroundColor = fieldsCompleted ? "#1D6154" : "";    
+    // errorMessage.style.display = fieldsCompleted ? "none" : "block";   
   });
 });
 
@@ -366,18 +372,20 @@ validateButton.addEventListener("click", function(event) {
     },
     body: newForm,
   })
-  .then(function(response) {        
+  .then(function(response) {          
     resetFormAndImage();
     return response.json();
   })  
   .then(function(data) {
     works.push(data);    
-    createGallery(works);
+    createGallery(works);      
   })      
   .catch(function(error) {
     console.error(error);
-  });
-  console.log(modalElements);
+  });  
+  modal.setAttribute('aria-hidden', 'true');
+  window.setTimeout(function(){  
+    modal.style.display = "none";
+    resetModal();
+  },500);
 });
-
-resetFormAndImage();

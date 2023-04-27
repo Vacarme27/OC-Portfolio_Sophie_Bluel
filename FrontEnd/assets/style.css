@@ -299,8 +299,7 @@ footer nav ul {
 	display: flex;
 	align-items: center;	
 	font-size: 14px;
-	font-weight: 400;	
-	font-style: 'Work Sans';	
+	font-weight: 400;
 	color: black;
 }
 .editor-mode i {
@@ -425,8 +424,8 @@ footer nav ul {
 	font-size: 25px;
 	cursor: pointer;
 }
-.close-modal:hover{
-	scale: 1.3;
+.close-modal:hover, .arrow-left:hover{
+	transform: scale(1.3);
 }
 
 .img-container{
@@ -523,9 +522,7 @@ footer nav ul {
 	font-size: 21px;
 	cursor: pointer;	
 }
-.arrow-left:hover{
-	scale:1.3;
-}
+
 .add-gallery{
 	display: flex;
 	flex-direction: column;
