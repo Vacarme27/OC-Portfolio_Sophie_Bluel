@@ -1,10 +1,7 @@
 const form = document.querySelector('#form');
-
 const error = document.querySelector('#error-message');
 
 form.addEventListener('submit', function(event) {
-
-// Empêche de recharger la page
   event.preventDefault();
 
   const email = form.email.value;
@@ -29,7 +26,6 @@ form.addEventListener('submit', function(event) {
       window.location.href = "index.html";
     } else {
       error.textContent = 'Nom d\'utilisateur ou mot de passe incorrect.';
-    }
-    console.log(user);
+    }    
   });
 });

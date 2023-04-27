@@ -1,3 +1,4 @@
+let works = [];
 // Récupération des projets, depuis le fichier JSON
 fetch("http://localhost:5678/api/works/")
   .then(function(response) {
@@ -12,7 +13,7 @@ fetch("http://localhost:5678/api/works/")
   });
 
 //___________Création de la gallerie________
-let works = [];
+
 const divGallery = document.querySelector(".gallery");
 
 function createGallery(works) {
@@ -36,8 +37,6 @@ function createGallery(works) {
     divGallery.appendChild(figureElement);
   }
 }
-
-createGallery(works);
 
 //______________Filtres__________________
 
@@ -206,7 +205,7 @@ galleryInModal(modalElements, modalGalleryShow);
 const deleteGalleryBtn = document.querySelector(".del-gallery");
 
 deleteGalleryBtn.addEventListener("click", function() {
-  const isConfirmed = confirm("Êtes-vous sûr de vouloir supprimer tout les éléments de la galerie ?");
+  const isConfirmed = confirm("Êtes-vous sûr de vouloir supprimer tous les éléments de la galerie ?");
 
   if (isConfirmed) {
     deleteGallery(works);
