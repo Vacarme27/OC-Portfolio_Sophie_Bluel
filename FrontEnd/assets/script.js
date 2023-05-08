@@ -1,80 +1,100 @@
 let works = [];
+const divGallery = document.querySelector(".gallery");
+const btnAll = document.querySelector(".btn-tous");
+
 // Récupération des projets, depuis le fichier JSON
+
 fetch("http://localhost:5678/api/works/")
   .then(function(response) {
     return response.json();
   })
-  .then(function(data) {
+  .then(async function(data) {
     works = data;
     createGallery(works);
+    var categories = Array.from(new Set(works.map(function(work) {
+        return work.categoryId;
+    })));
+    await createFilterButtons(categories);
   })
   .catch(function(error) {
     console.error(error);
   });
+//_____________Récupération des catégories_____________
 
-//___________Création de la gallerie________
+  async function getCategories() {
+    try {
+      const response = await fetch('http://localhost:5678/api/categories');
+      return await response.json();
+    } catch (error) {
+      return console.error(error);
+    }
+  }
 
-const divGallery = document.querySelector(".gallery");
+//______________Création boutons filtres________________
 
-function createGallery(works) {
-  divGallery.innerHTML = "";
-  for (let i = 0; i < works.length; i++) {
-
-    const gallery = works[i];
-
-    const figureElement = document.createElement("figure");
-    const imageElement = document.createElement("img");
-
-    imageElement.src = gallery.imageUrl;
-    imageElement.alt = gallery.title;
-
-    const nomElement = document.createElement("figcaption");
-    nomElement.innerText = gallery.title;
-
-    figureElement.appendChild(imageElement);
-    figureElement.appendChild(nomElement);
-    figureElement.setAttribute("data-id", gallery.id);
-    divGallery.appendChild(figureElement);
+async function createFilterButtons(categories) {
+  const btnContainer = document.querySelector(".btn-container");
+  try {
+    const categoriesData = await getCategories();
+    categoriesData.forEach(function(categoryData) {
+      const categoryId = categoryData.id;
+      const categoryName = categoryData.name;
+      if (categories.includes(categoryId)) {
+        const btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = categoryName;
+        btnContainer.appendChild(btn);
+        btn.addEventListener("click", function() {
+          const worksFiltre = works.filter(function(work) {
+            return work.categoryId === categoryId;
+          });
+          document.querySelector(".gallery").innerHTML = "";
+          createGallery(worksFiltre);
+          activeButton(btn);
+        });
+      }
+    });    
+  } catch (error) {
+    console.error(error);
   }
 }
+  //________________Bouton Tous________________
 
-//______________Filtres__________________
+  btnAll.addEventListener("click", function() {
+    createGallery(works);
+    activeButton(btnAll);
+  }); 
 
-const btnTous = document.querySelector(".btn-tous");
-const btnObjets = document.querySelector(".btn-objets");
-const btnAppartements = document.querySelector(".btn-appartements");
-const btnHotels = document.querySelector(".btn-hotels");
+//______Ajout et suppresssion de la classe "active"__________
 
-const filtreBtn = [
-  { bouton: btnTous, categorie: null },
-  { bouton: btnObjets, categorie: 1 },
-  { bouton: btnAppartements, categorie: 2 },
-  { bouton: btnHotels, categorie: 3 }
-];
-
-function activeBouton(active) {
-  filtreBtn.forEach(function(tableau){
-    tableau.bouton.classList.remove("active");
+function activeButton(active) {
+  const buttons = document.querySelectorAll(".btn");
+  buttons.forEach(function(btn) {
+    btn.classList.remove("active");
   });
   active.classList.add("active");
 }
 
-filtreBtn.forEach(function(tableau) {
-  tableau.bouton.addEventListener("click", function() {
-    const categorie = tableau.categorie;
-    let worksFiltre;
-    if (categorie) {
-      worksFiltre = works.filter(function(search) {
-        return search.categoryId === categorie;        
-      });      
-    } else {
-      worksFiltre = works;
-    }
-    document.querySelector(".gallery").innerHTML = "";
-    createGallery(worksFiltre);
-    activeBouton(tableau.bouton);    
+//____________Céation de la galerie_____________
+
+function createGallery(works) {
+  divGallery.innerHTML = "";
+  works.forEach(function(work) {
+    const figureElement = document.createElement("figure");
+    const imageElement = document.createElement("img");
+
+    imageElement.src = work.imageUrl;
+    imageElement.alt = work.title;
+
+    const nomElement = document.createElement("figcaption");
+    nomElement.innerText = work.title;
+
+    figureElement.appendChild(imageElement);
+    figureElement.appendChild(nomElement);
+    figureElement.setAttribute("data-id", work.id);
+    divGallery.appendChild(figureElement);
   });
-});
+}
 
 //____________________EDITOR_MODE_______________//
 
@@ -134,7 +154,7 @@ const closeModal = function (event) {
   modal.querySelector('.js-stop-modal').removeEventListener('click', stopPropagation);
   modal.querySelector('.js-stop-modal-gallery').removeEventListener('click', stopPropagation);
 
-  resetModal()  
+  resetModal()
 }
 
 const stopPropagation = function (event){
@@ -302,8 +322,15 @@ function resetFormAndImage() {
   validateButton.style.backgroundColor = "";
   
 }
+//______On va chercher les catégories dynamiquement______
 
-function createNewInputImage() {  
+function createNewInputImage() {
+  getCategories().then(function(categories) {
+  categoryForm.innerHTML = '<option value="null">Veuillez choisir une catégorie</option>';
+  categories.forEach(function(category) {
+  categoryForm.innerHTML += '<option value="' + category.id + '">' + category.name + '</option>';
+  });
+  });  
   inputImage.type = "file";
   inputImage.name = "image";
   inputImage.accept = ".png, .jpg, .jpeg";
@@ -314,8 +341,7 @@ function createNewInputImage() {
     const file = inputImage.files[0];
     addImageToForm(file);
   });
-
-  return inputImage;
+  return inputImage;  
 }
 
 function addImageToForm(file) {
@@ -346,8 +372,7 @@ modalGalleryButton.addEventListener("click", function() {
     if (titleForm.value.trim() !== "" && categoryForm.value !== "null" && inputImage.files.length > 0) {
       fieldsCompleted = true;
     }      
-    validateButton.style.backgroundColor = fieldsCompleted ? "#1D6154" : "";    
-    // errorMessage.style.display = fieldsCompleted ? "none" : "block";   
+    validateButton.style.backgroundColor = fieldsCompleted ? "#1D6154" : ""; 
   });
 });
 
